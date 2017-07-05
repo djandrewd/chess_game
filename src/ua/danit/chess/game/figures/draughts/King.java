@@ -1,5 +1,6 @@
 package ua.danit.chess.game.figures.draughts;
 
+import ua.danit.chess.game.Color;
 import ua.danit.chess.game.Point;
 
 import java.util.Collections;
@@ -17,7 +18,7 @@ public class King extends AbstractDraughtFigure {
      *
      * @param color the color, might be 0 or 1 when using standart chess rules.
      */
-    public King(int color) {
+    public King(Color color) {
         super(color);
     }
 

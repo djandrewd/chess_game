@@ -2,6 +2,7 @@ package ua.danit.chess.game.figures.draughts;
 
 import org.junit.Before;
 import org.junit.Test;
+import ua.danit.chess.game.Color;
 import ua.danit.chess.game.Point;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class KingTest {
 
     @Before
     public void init() {
-        king = new King(0);
+        king = new King(Color.BLACK);
     }
 
     @Test

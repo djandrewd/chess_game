@@ -25,7 +25,35 @@ public enum GameErrors {
     /**
      * Value indicating  incorrect color of player selected.
      */
-    ERROR_INCORRECT_COLOR(4);
+    ERROR_INCORRECT_COLOR(4),
+    /**
+     * Value indicating incorrect player turn.
+     */
+    ERROR_INCORRECT_PLAYER_TURN(5),
+    /**
+     * Value indicating incorrect start position of figure.
+     */
+    ERROR_INCORRECT_START_POSITION(6),
+    /**
+     * Value indicating incorrect end position of figure.
+     */
+    ERROR_INCORRECT_END_POSITION(7),
+    /**
+     * Value indicating move is not allowed by figure.
+     */
+    ERROR_MOVE_IS_NOT_ALLOWED_BY_FIGURE(8),
+    /**
+     * Value indicating when move must be only beat one.
+     */
+    ERROR_MOVE_MUST_BE_ONLY_BEAT_ONE(9),
+    /**
+     * Error incorrect general move error.
+     */
+    ERROR_INCORRECT_MOVE(10),
+    /**
+     * Value indicating that user not playing on this table.
+     */
+    ERROR_NOT_PLAYING(11);
 
     private int code;
 

@@ -1,6 +1,9 @@
 package ua.danit.chess.game.rules;
 
+import ua.danit.chess.game.Color;
+import ua.danit.chess.game.MoveResult;
 import ua.danit.chess.game.Point;
+import ua.danit.chess.game.dao.GameState;
 import ua.danit.chess.game.figures.Figure;
 
 /**
@@ -17,10 +20,11 @@ public interface GameRule<T extends Figure> {
     /**
      * Init game for two with colors describing each members. Game must be started with colorA!
      *
-     * @param colorA the color of figures for first player.
-     * @param colorB the color of figures for second player.
+     * @param colorA    the color of figures for first player.
+     * @param colorB    the color of figures for second player.
+     * @param gameState the game state previously stored in data store.
      */
-    void init(int colorA, int colorB);
+    void init(Color colorA, Color colorB, GameState gameState);
 
     /**
      * Try to check if current game is finished.
@@ -34,7 +38,14 @@ public interface GameRule<T extends Figure> {
      *
      * @return the winner color, of -1 if game is not yer finished.
      */
-    int getWinnerColor();
+    Color getWinnerColor();
+
+    /**
+     * Gets current color which turn is.
+     *
+     * @return current color which turn is.
+     */
+    Color getCurrentTurn();
 
     /**
      * Move figure of color from position A to position B using.
@@ -42,9 +53,9 @@ public interface GameRule<T extends Figure> {
      * @param color        the color of figure to move.
      * @param positionFrom the position where figure is located.
      * @param positionEnd  the position where figure must be moved.
-     * @return true in case move is made successfully.
+     * @return result of current move: error code, beated figures and flag indicating the game is won
      */
-    boolean move(int color, Point positionFrom, Point positionEnd);
+    MoveResult move(Color color, Point positionFrom, Point positionEnd);
 
     /**
      * Gets current playing board.

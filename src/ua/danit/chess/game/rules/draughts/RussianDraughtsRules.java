@@ -1,15 +1,30 @@
 package ua.danit.chess.game.rules.draughts;
 
+import ua.danit.chess.game.Color;
+import ua.danit.chess.game.GameErrors;
+import ua.danit.chess.game.MoveResult;
 import ua.danit.chess.game.Point;
+import ua.danit.chess.game.dao.GameState;
+import ua.danit.chess.game.figures.Figure;
 import ua.danit.chess.game.figures.draughts.AbstractDraughtFigure;
+import ua.danit.chess.game.figures.draughts.King;
 import ua.danit.chess.game.figures.draughts.Man;
 import ua.danit.chess.game.rules.Board;
 import ua.danit.chess.game.rules.GameRule;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_END_POSITION;
+import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_MOVE;
+import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_PLAYER_TURN;
+import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_START_POSITION;
+import static ua.danit.chess.game.GameErrors.ERROR_MOVE_IS_NOT_ALLOWED_BY_FIGURE;
+import static ua.danit.chess.game.GameErrors.ERROR_MOVE_MUST_BE_ONLY_BEAT_ONE;
+import static ua.danit.chess.game.GameErrors.OK;
 import static ua.danit.chess.game.Point.create;
 
 /**
@@ -22,82 +37,164 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
     private static final int BOARD_SIZE = 8;
     private static final int COLOR_SIZE = BOARD_SIZE / 2;
     private static final int FIGURES_SIZE = 12;
+    private static final int MAX_CHECK_MOVE = 2;
 
-    private int winnerColor;
-    private int currentColor;
+    private Color winnerColor;
+    private Color currentColor;
+    private Color pendingColor;
 
-    private boolean isFinished;
+    private EnumMap<Color, Integer> kingLines;
     private Board<AbstractDraughtFigure> board;
 
     @Override
-    public void init(int colorA, int colorB) {
+    public void init(Color colorA, Color colorB, GameState gameState) {
+        kingLines = new EnumMap<>(Color.class);
+        kingLines.put(colorA, 0);
+        kingLines.put(colorB, BOARD_SIZE - 1);
         board = new Board<>(BOARD_SIZE);
-        currentColor = colorA;
-        for (int i = 0; i < FIGURES_SIZE / COLOR_SIZE; i++) {
-            for (int j = 0; j < COLOR_SIZE; j++) {
-                Man man = new Man(colorB);
-                board.placeFigure(man, create(j * 2 + (i + 1) % 2, i));
 
-                man = new Man(colorA);
-                board.placeFigure(man, create(BOARD_SIZE - 1 - j * 2 - (i + 1) % 2, BOARD_SIZE - 1 - i));
+        if (gameState != null) {
+            GameState.BoardState boardState = gameState.getBoardState();
+            currentColor = boardState.getCurrentTurn();
+            pendingColor = currentColor == colorA ? colorB : colorA;
+            winnerColor = boardState.getWinner();
+            boardState.getBoard().forEach((k, v) -> board.placeFigure(k, (AbstractDraughtFigure) v));
+        } else {
+            currentColor = colorA;
+            pendingColor = colorB;
+            for (int i = 0; i < FIGURES_SIZE / COLOR_SIZE; i++) {
+                for (int j = 0; j < COLOR_SIZE; j++) {
+                    Man man = new Man(colorA);
+                    board.placeFigure(create(j * 2 + (i + 1) % 2, i), man);
+
+                    man = new Man(colorB);
+                    board.placeFigure(create(BOARD_SIZE - 1 - j * 2 - (i + 1) % 2, BOARD_SIZE - 1 - i), man);
+                }
             }
         }
     }
 
     @Override
-    public boolean move(int color, Point positionFrom, Point positionEnd) {
+    public MoveResult move(Color color, Point positionFrom, Point positionEnd) {
         if (color != currentColor) {
-            return false;
+            return new MoveResult(ERROR_INCORRECT_PLAYER_TURN);
+        }
+        GameErrors error = canMakeMove(color, positionFrom, positionEnd);
+        if (error != OK) {
+            return new MoveResult(error);
         }
 
-        // Check figure found
         AbstractDraughtFigure figure = board.getFigure(positionFrom);
-        if (figure == null) {
-            return false;
-        }
-        // Do not allow to place figure where some other figure is located.
-        if (board.getFigure(positionEnd) != null) {
-            return false;
-        }
-
-        // TODO Check if possible beat moves on this figure not corresponds one needed!
-
         List<Point> move = figure.movePath(positionFrom, positionEnd);
-        if (move.isEmpty()) {
-            return false;
+        Map<Point, AbstractDraughtFigure> beatedFigures = getBeatedFigures(move);
+
+        // Make actual move
+        board.removeFigure(positionFrom);
+        // change figure to king when entity move to current line.
+        if (kingLines.get(currentColor) == positionEnd.getyCoordinate()) {
+            figure = new King(color);
         }
-        // If we pass figures of our type.
-        if (move.stream().map(board::getFigure).allMatch(v -> v != null && v.getColor() == color)) {
-            return false;
+        board.placeFigure(positionEnd, figure);
+
+        // remove beated figures from the boards
+        beatedFigures.keySet().forEach(board::removeFigure);
+
+        // Check if player win the game.
+        if (tryFinishGame()) {
+            winnerColor = color;
         }
 
-        Map<Point, AbstractDraughtFigure> beatedFigures = move
-                .stream()
-                .filter(v -> board.getFigure(v) != null && board.getFigure(v).getColor() != color)
-                .collect(Collectors.toMap(k -> k, k -> board.getFigure(k)));
+        // Change move and give it to another player.
+        changeMove();
 
-        boolean onlyBeatMove = figure.isOnlyBeatMove(move);
-        // check that we beat something during this move, because this move was made as beat.
-        if (onlyBeatMove && beatedFigures.isEmpty()) {
-            return false;
-        }
-        // TODO: return beated entries.
-        // TODO: check that beat must be made by current players.
-        return true;
+        List<Figure> beatedResult = new ArrayList<>(beatedFigures.values());
+        return new MoveResult(OK, beatedResult, currentColor, winnerColor);
     }
 
     @Override
     public boolean isFinished() {
-        return isFinished;
+        return winnerColor != null;
     }
 
     @Override
-    public int getWinnerColor() {
+    public Color getWinnerColor() {
         return winnerColor;
     }
 
     @Override
+    public Color getCurrentTurn() {
+        return currentColor;
+    }
+
+    @Override
     public Board<AbstractDraughtFigure> getPlayingBoard() {
-        return null;
+        return board;
+    }
+
+    private GameErrors canMakeMove(Color color, Point positionFrom, Point positionEnd) {
+        // Check figure found
+        AbstractDraughtFigure figure = board.getFigure(positionFrom);
+        if (figure == null || figure.getColor() != color) {
+            return ERROR_INCORRECT_START_POSITION;
+        }
+        // Do not allow to place figure where some other figure is located.
+        if (board.getFigure(positionEnd) != null) {
+            return ERROR_INCORRECT_END_POSITION;
+        }
+        List<Point> move = figure.movePath(positionFrom, positionEnd);
+        // When move is not allowed by figure rules.
+        if (move.isEmpty()) {
+            return ERROR_MOVE_IS_NOT_ALLOWED_BY_FIGURE;
+        }
+        // If we pass figures of our type.
+        if (move.stream().map(board::getFigure).anyMatch(v -> v != null && v.getColor() == color)) {
+            return ERROR_INCORRECT_MOVE;
+        }
+        Map<Point, AbstractDraughtFigure> beatedFigures = getBeatedFigures(move);
+        boolean onlyBeatMove = figure.isOnlyBeatMove(move);
+        // check that we beat something during this move, because this move was made as beat.
+        if (onlyBeatMove && beatedFigures.isEmpty()) {
+            return ERROR_MOVE_MUST_BE_ONLY_BEAT_ONE;
+        }
+        return OK;
+    }
+
+    private Map<Point, AbstractDraughtFigure> getBeatedFigures(List<Point> move) {
+        return move.stream()
+                .filter(v -> board.getFigure(v) != null && board.getFigure(v).getColor() != currentColor)
+                .collect(Collectors.toMap(k -> k, k -> board.getFigure(k)));
+    }
+
+    private void changeMove() {
+        Color tmp = currentColor;
+        currentColor = pendingColor;
+        pendingColor = tmp;
+    }
+
+    private boolean tryFinishGame() {
+        // When one player beats all other figures.
+        if (board.figuresStream().allMatch(v -> v.getColor() == currentColor)) {
+            return true;
+        }
+
+        // When other player has no place to put its figure.
+        return board.positionsWithFiguresStream().noneMatch(v -> {
+            AbstractDraughtFigure figure = board.getFigure(v);
+            if (figure.getColor() == currentColor) {
+                return true;
+            }
+            List<List<Point>> moves = figure.getPossibleMoves(v, BOARD_SIZE);
+            if (moves.isEmpty()) {
+                return true;
+            }
+            for (List<Point> move : moves) {
+                for (int i = 0; i < MAX_CHECK_MOVE; i++) {
+                    if (canMakeMove(figure.getColor(), v, move.get(i)) == OK) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
     }
 }

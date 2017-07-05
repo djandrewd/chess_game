@@ -1,5 +1,6 @@
 package ua.danit.chess.game.figures;
 
+import ua.danit.chess.game.Color;
 import ua.danit.chess.game.Point;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public interface Figure {
     List<Point> movePath(Point positionFrom, Point positionTo);
 
     /**
-     * Gets color of current figure..
+     * Gets color of current figure.
      *
      * @return the color of concrete figure
      */
-    int getColor();
+    Color getColor();
 }

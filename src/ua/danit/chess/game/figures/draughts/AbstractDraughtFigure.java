@@ -1,5 +1,6 @@
 package ua.danit.chess.game.figures.draughts;
 
+import ua.danit.chess.game.Color;
 import ua.danit.chess.game.Point;
 import ua.danit.chess.game.figures.AbstractColoredFigure;
 
@@ -8,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.min;
 import static java.lang.Math.signum;
 import static ua.danit.chess.game.Point.create;
 
@@ -19,7 +21,7 @@ import static ua.danit.chess.game.Point.create;
  * @author Andrey Minov
  */
 public abstract class AbstractDraughtFigure extends AbstractColoredFigure {
-    AbstractDraughtFigure(int color) {
+    AbstractDraughtFigure(Color color) {
         super(color);
     }
 
@@ -47,6 +49,58 @@ public abstract class AbstractDraughtFigure extends AbstractColoredFigure {
     }
 
     /**
+     * Gets possible moves for figure at position, according to playing board size.
+     *
+     * @param position  the position where figure is located
+     * @param boardSize the board size
+     * @return the list of possible moves of current figure.
+     */
+    public List<List<Point>> getPossibleMoves(Point position, int boardSize) {
+        // Left up
+        List<Point> moveLU = new ArrayList<>();
+        // Left right
+        List<Point> moveLD = new ArrayList<>();
+        // Right up
+        List<Point> moveRU = new ArrayList<>();
+        // Right down
+        List<Point> moveRD = new ArrayList<>();
+
+        List<List<Point>> moves = new ArrayList<>();
+        for (int i = 1; i <= min(boardSize, getMoveLenght()); i++) {
+            Point p = create(position.getxCoordinate() - i, position.getyCoordinate() - i);
+            if (p.isValid()) {
+                moveLU.add(p);
+            }
+            p = create(position.getxCoordinate() - i, position.getyCoordinate() + i);
+            if (p.isValid() && position.getyCoordinate() < boardSize) {
+                moveLD.add(p);
+            }
+            p = create(position.getxCoordinate() + i, position.getyCoordinate() - i);
+            if (p.isValid() && position.getxCoordinate() < boardSize) {
+                moveRU.add(p);
+            }
+            p = create(position.getxCoordinate() + i, position.getyCoordinate() + i);
+            if (p.isValid() && position.getxCoordinate() < boardSize && position.getyCoordinate() < boardSize) {
+                moveRD.add(p);
+            }
+        }
+        if (!moveLU.isEmpty()) {
+            moves.add(moveLU);
+        }
+        if (!moveLD.isEmpty()) {
+            moves.add(moveLD);
+        }
+        if (!moveRU.isEmpty()) {
+            moves.add(moveRU);
+        }
+        if (!moveRD.isEmpty()) {
+            moves.add(moveRD);
+        }
+        return moves;
+    }
+
+
+    /**
      * Check is this move must be made only in case when figure beat other figure.
      *
      * @param move the move
@@ -55,11 +109,9 @@ public abstract class AbstractDraughtFigure extends AbstractColoredFigure {
     public abstract boolean isOnlyBeatMove(List<Point> move);
 
     /**
-     * Gets possible moves for figure at position, according to playing board size.
-     *
-     * @param position  the position where figure is located
-     * @param boardSize the board size
-     * @return the list of possible moves of current figure.
-     */
-    public abstract List<List<Point>> getPossibleMoves(Point position, int boardSize);
+     * Get maximum lenght of points that figure can move during game.
+     * */
+    protected int getMoveLenght() {
+        return Integer.MAX_VALUE;
+    }
 }

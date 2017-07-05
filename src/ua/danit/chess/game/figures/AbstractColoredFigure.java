@@ -1,5 +1,7 @@
 package ua.danit.chess.game.figures;
 
+import ua.danit.chess.game.Color;
+
 /**
  * Presented figure that has color inside.
  *
@@ -10,14 +12,14 @@ public abstract class AbstractColoredFigure implements Figure {
     /**
      * Color of concrete figure.
      */
-    private int color;
+    private Color color;
 
     /**
      * Instantiates a new Abstract colored figure.
      *
      * @param color the color, might be 0 or 1 when using standart chess rules.
      */
-    protected AbstractColoredFigure(int color) {
+    protected AbstractColoredFigure(Color color) {
         this.color = color;
     }
 
@@ -27,7 +29,7 @@ public abstract class AbstractColoredFigure implements Figure {
      * @return the color of concrete figure
      */
     @Override
-    public int getColor() {
+    public Color getColor() {
         return color;
     }
 
@@ -37,12 +39,13 @@ public abstract class AbstractColoredFigure implements Figure {
         if (o == null || getClass() != o.getClass()) return false;
 
         AbstractColoredFigure that = (AbstractColoredFigure) o;
+
         return color == that.color;
     }
 
     @Override
     public int hashCode() {
-        return color;
+        return color != null ? color.hashCode() : 0;
     }
 
     @Override
