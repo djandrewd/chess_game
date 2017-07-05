@@ -1,8 +1,6 @@
-package ua.danit.chess.game;
+package ua.danit.chess.api.game;
 
-import ua.danit.chess.game.figures.Figure;
-
-import java.util.List;
+import java.util.Map;
 
 /**
  * This entity holds result information about move.
@@ -13,7 +11,7 @@ public class MoveResult {
     private GameErrors error;
     private Color nextMove;
     private Color winner;
-    private List<Figure> beatedFigures;
+    private Map<Point, Figure> beatedFigures;
 
     /**
      * Instantiates a new Move result.
@@ -33,7 +31,7 @@ public class MoveResult {
      * @param nextMove      color of player that is next turn.
      * @param winner        current winner if winMove is true.
      */
-    public MoveResult(GameErrors error, List<Figure> beatedFigures, Color nextMove, Color winner) {
+    public MoveResult(GameErrors error, Map<Point, Figure> beatedFigures, Color nextMove, Color winner) {
         this(error);
         this.beatedFigures = beatedFigures;
         this.nextMove = nextMove;
@@ -72,7 +70,7 @@ public class MoveResult {
      *
      * @return the beated figures
      */
-    public List<Figure> getBeatedFigures() {
+    public Map<Point, Figure> getBeatedFigures() {
         return beatedFigures;
     }
 

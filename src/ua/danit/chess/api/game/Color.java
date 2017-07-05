@@ -1,4 +1,4 @@
-package ua.danit.chess.game;
+package ua.danit.chess.api.game;
 
 /**
  * Describe possible playing colors in the game.

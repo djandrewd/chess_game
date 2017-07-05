@@ -1,7 +1,7 @@
 package ua.danit.chess.game.figures.draughts;
 
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.Point;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.Point;
 import ua.danit.chess.game.figures.AbstractColoredFigure;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 import static java.lang.Math.abs;
 import static java.lang.Math.min;
 import static java.lang.Math.signum;
-import static ua.danit.chess.game.Point.create;
+import static ua.danit.chess.api.game.Point.create;
 
 /**
  * Describes abstract figure for playing draughts. In draughts figure can move differently in case

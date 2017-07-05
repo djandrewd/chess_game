@@ -1,4 +1,4 @@
-package ua.danit.chess.game;
+package ua.danit.chess.api.game;
 
 /**
  * Enumeration for error occurred during game play.
@@ -53,7 +53,11 @@ public enum GameErrors {
     /**
      * Value indicating that user not playing on this table.
      */
-    ERROR_NOT_PLAYING(11);
+    ERROR_NOT_PLAYING(11),
+    /**
+     * Value indicating that color was already selected by another user.
+     */
+    ERROR_COLOR_ALREADY_SELECTED(12);
 
     private int code;
 

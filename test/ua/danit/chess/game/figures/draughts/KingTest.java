@@ -2,8 +2,8 @@ package ua.danit.chess.game.figures.draughts;
 
 import org.junit.Before;
 import org.junit.Test;
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.Point;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.Point;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static ua.danit.chess.game.Point.create;
+import static ua.danit.chess.api.game.Point.create;
 
 /**
  * Unit tests for king moves and actions.

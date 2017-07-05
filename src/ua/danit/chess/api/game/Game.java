@@ -1,24 +1,16 @@
-package ua.danit.chess.game;
+package ua.danit.chess.api.game;
 
-import ua.danit.chess.game.dao.GameState;
-import ua.danit.chess.game.dao.GameStateDao;
-import ua.danit.chess.game.figures.Figure;
-import ua.danit.chess.game.rules.Board;
-import ua.danit.chess.game.rules.GameRule;
-import ua.danit.chess.players.Player;
+import ua.danit.chess.api.dao.GameState;
+import ua.danit.chess.api.dao.GameStateDao;
+import ua.danit.chess.api.rules.Board;
+import ua.danit.chess.api.rules.GameRule;
+import ua.danit.chess.api.Player;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static ua.danit.chess.game.GameErrors.ERROR_ALREADY_PLAYING;
-import static ua.danit.chess.game.GameErrors.ERROR_FINISHED;
-import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_COLOR;
-import static ua.danit.chess.game.GameErrors.ERROR_MOVE_NOT_ALLOWED;
-import static ua.danit.chess.game.GameErrors.ERROR_NOT_PLAYING;
-import static ua.danit.chess.game.GameErrors.OK;
 
 /**
  * Describes game process and interactions.
@@ -68,13 +60,16 @@ public class Game<T extends Figure> {
      */
     public GameErrors joinGame(Color color, Player player) {
         if (userSessions.containsKey(player.getId())) {
-            return ERROR_ALREADY_PLAYING;
+            return GameErrors.ERROR_ALREADY_PLAYING;
         }
         if (!COLORS.contains(color)) {
-            return ERROR_INCORRECT_COLOR;
+            return GameErrors.ERROR_INCORRECT_COLOR;
+        }
+        if (userSessions.values().contains(color)) {
+            return GameErrors.ERROR_COLOR_ALREADY_SELECTED;
         }
         userSessions.put(player.getId(), color);
-        return OK;
+        return GameErrors.OK;
     }
 
     /**
@@ -87,14 +82,14 @@ public class Game<T extends Figure> {
      */
     public MoveResult makeMove(Player player, Point positionFrom, Point positionTo) {
         if (userSessions.size() < COLORS.size()) {
-            return new MoveResult(ERROR_MOVE_NOT_ALLOWED);
+            return new MoveResult(GameErrors.ERROR_MOVE_NOT_ALLOWED);
         }
         if (gameRule.isFinished()) {
-            return new MoveResult(ERROR_FINISHED);
+            return new MoveResult(GameErrors.ERROR_FINISHED);
         }
         Color color = userSessions.get(player.getId());
         if (color == null) {
-            return new MoveResult(ERROR_NOT_PLAYING);
+            return new MoveResult(GameErrors.ERROR_NOT_PLAYING);
         }
 
         MoveResult move = gameRule.move(color, positionFrom, positionTo);

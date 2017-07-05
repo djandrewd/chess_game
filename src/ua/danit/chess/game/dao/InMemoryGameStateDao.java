@@ -1,5 +1,8 @@
 package ua.danit.chess.game.dao;
 
+import ua.danit.chess.api.dao.GameState;
+import ua.danit.chess.api.dao.GameStateDao;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

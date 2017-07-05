@@ -1,4 +1,4 @@
-package ua.danit.chess.game.dao;
+package ua.danit.chess.api.dao;
 
 /**
  * Data access object for storing and restoring state of current game.

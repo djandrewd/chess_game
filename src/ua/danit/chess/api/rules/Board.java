@@ -1,14 +1,14 @@
-package ua.danit.chess.game.rules;
+package ua.danit.chess.api.rules;
 
-import ua.danit.chess.game.Point;
-import ua.danit.chess.game.figures.Figure;
+import ua.danit.chess.api.game.Point;
+import ua.danit.chess.api.game.Figure;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static ua.danit.chess.game.Point.create;
+import static ua.danit.chess.api.game.Point.create;
 
 /**
  * Game board with figures and spots.

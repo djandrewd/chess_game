@@ -1,7 +1,7 @@
 package ua.danit.chess.game.figures.draughts;
 
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.Point;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.Point;
 
 import java.util.Collections;
 import java.util.List;

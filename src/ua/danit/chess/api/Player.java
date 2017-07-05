@@ -1,4 +1,4 @@
-package ua.danit.chess.players;
+package ua.danit.chess.api;
 
 /**
  * Holds information about player, attributes and actions.

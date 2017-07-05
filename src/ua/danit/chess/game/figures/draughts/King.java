@@ -1,9 +1,8 @@
 package ua.danit.chess.game.figures.draughts;
 
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.Point;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.Point;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,8 +28,7 @@ public class King extends AbstractDraughtFigure {
     }
 
     @Override
-    public List<List<Point>> getPossibleMoves(Point position, int boardSize) {
-        // TODO.
-        return Collections.emptyList();
+    public String toString() {
+        return "K[" + super.toString() + "]";
     }
 }

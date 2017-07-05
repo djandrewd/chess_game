@@ -1,10 +1,10 @@
-package ua.danit.chess.game.rules;
+package ua.danit.chess.api.rules;
 
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.MoveResult;
-import ua.danit.chess.game.Point;
-import ua.danit.chess.game.dao.GameState;
-import ua.danit.chess.game.figures.Figure;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.MoveResult;
+import ua.danit.chess.api.game.Point;
+import ua.danit.chess.api.dao.GameState;
+import ua.danit.chess.api.game.Figure;
 
 /**
  * GameRule.

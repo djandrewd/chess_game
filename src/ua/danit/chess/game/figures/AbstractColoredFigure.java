@@ -1,6 +1,7 @@
 package ua.danit.chess.game.figures;
 
-import ua.danit.chess.game.Color;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.Figure;
 
 /**
  * Presented figure that has color inside.
@@ -50,6 +51,6 @@ public abstract class AbstractColoredFigure implements Figure {
 
     @Override
     public String toString() {
-        return "color=" + color;
+        return String.valueOf(color);
     }
 }

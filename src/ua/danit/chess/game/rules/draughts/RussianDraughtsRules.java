@@ -1,31 +1,31 @@
 package ua.danit.chess.game.rules.draughts;
 
-import ua.danit.chess.game.Color;
-import ua.danit.chess.game.GameErrors;
-import ua.danit.chess.game.MoveResult;
-import ua.danit.chess.game.Point;
-import ua.danit.chess.game.dao.GameState;
-import ua.danit.chess.game.figures.Figure;
+import ua.danit.chess.api.game.Color;
+import ua.danit.chess.api.game.GameErrors;
+import ua.danit.chess.api.game.MoveResult;
+import ua.danit.chess.api.game.Point;
+import ua.danit.chess.api.dao.GameState;
+import ua.danit.chess.api.game.Figure;
 import ua.danit.chess.game.figures.draughts.AbstractDraughtFigure;
 import ua.danit.chess.game.figures.draughts.King;
 import ua.danit.chess.game.figures.draughts.Man;
-import ua.danit.chess.game.rules.Board;
-import ua.danit.chess.game.rules.GameRule;
+import ua.danit.chess.api.rules.Board;
+import ua.danit.chess.api.rules.GameRule;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_END_POSITION;
-import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_MOVE;
-import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_PLAYER_TURN;
-import static ua.danit.chess.game.GameErrors.ERROR_INCORRECT_START_POSITION;
-import static ua.danit.chess.game.GameErrors.ERROR_MOVE_IS_NOT_ALLOWED_BY_FIGURE;
-import static ua.danit.chess.game.GameErrors.ERROR_MOVE_MUST_BE_ONLY_BEAT_ONE;
-import static ua.danit.chess.game.GameErrors.OK;
-import static ua.danit.chess.game.Point.create;
+import static ua.danit.chess.api.game.GameErrors.ERROR_INCORRECT_END_POSITION;
+import static ua.danit.chess.api.game.GameErrors.ERROR_INCORRECT_MOVE;
+import static ua.danit.chess.api.game.GameErrors.ERROR_INCORRECT_PLAYER_TURN;
+import static ua.danit.chess.api.game.GameErrors.ERROR_INCORRECT_START_POSITION;
+import static ua.danit.chess.api.game.GameErrors.ERROR_MOVE_IS_NOT_ALLOWED_BY_FIGURE;
+import static ua.danit.chess.api.game.GameErrors.ERROR_MOVE_MUST_BE_ONLY_BEAT_ONE;
+import static ua.danit.chess.api.game.GameErrors.OK;
+import static ua.danit.chess.api.game.Point.create;
 
 /**
  * Describe rules for draughts. Any actions that must be made for user to win the game.
@@ -49,8 +49,8 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
     @Override
     public void init(Color colorA, Color colorB, GameState gameState) {
         kingLines = new EnumMap<>(Color.class);
-        kingLines.put(colorA, 0);
-        kingLines.put(colorB, BOARD_SIZE - 1);
+        kingLines.put(colorA, BOARD_SIZE - 1);
+        kingLines.put(colorB, 0);
         board = new Board<>(BOARD_SIZE);
 
         if (gameState != null) {
@@ -107,8 +107,8 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
         // Change move and give it to another player.
         changeMove();
 
-        List<Figure> beatedResult = new ArrayList<>(beatedFigures.values());
-        return new MoveResult(OK, beatedResult, currentColor, winnerColor);
+        Map<Point, Figure> figures = new HashMap<>(beatedFigures);
+        return new MoveResult(OK, figures, currentColor, winnerColor);
     }
 
     @Override
@@ -187,8 +187,12 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
             if (moves.isEmpty()) {
                 return true;
             }
+            outer:
             for (List<Point> move : moves) {
                 for (int i = 0; i < MAX_CHECK_MOVE; i++) {
+                    if (i >= move.size()) {
+                        continue outer;
+                    }
                     if (canMakeMove(figure.getColor(), v, move.get(i)) == OK) {
                         return true;
                     }
