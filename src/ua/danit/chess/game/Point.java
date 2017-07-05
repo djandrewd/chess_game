@@ -1,4 +1,4 @@
-package ua.danit.chess;
+package ua.danit.chess.game;
 
 /**
  * Describe point at two dimensional figure.

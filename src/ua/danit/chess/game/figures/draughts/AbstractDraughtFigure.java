@@ -1,7 +1,7 @@
-package ua.danit.chess.figures.draughts;
+package ua.danit.chess.game.figures.draughts;
 
-import ua.danit.chess.Point;
-import ua.danit.chess.figures.AbstractColoredFigure;
+import ua.danit.chess.game.Point;
+import ua.danit.chess.game.figures.AbstractColoredFigure;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,21 +9,17 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.signum;
-import static ua.danit.chess.Point.create;
+import static ua.danit.chess.game.Point.create;
 
 /**
- * This is king figure in draughts. This figure can move by diagonal in any type of steps.
- * Men figure can become king when accessing opposite player starting line.
+ * Describes abstract figure for playing draughts. In draughts figure can move differently in case
+ * figure is beating or not. Also we need to know possible moves because due to playing rules
+ * if beating is possible it must be made!
  *
  * @author Andrey Minov
  */
-public class King extends AbstractColoredFigure {
-    /**
-     * Instantiates a new King figure.
-     *
-     * @param color the color, might be 0 or 1 when using standart chess rules.
-     */
-    public King(int color) {
+public abstract class AbstractDraughtFigure extends AbstractColoredFigure {
+    AbstractDraughtFigure(int color) {
         super(color);
     }
 
@@ -49,4 +45,21 @@ public class King extends AbstractColoredFigure {
         }
         return move;
     }
+
+    /**
+     * Check is this move must be made only in case when figure beat other figure.
+     *
+     * @param move the move
+     * @return true only if this move can be make in case of beating other figure, false otherwise.
+     */
+    public abstract boolean isOnlyBeatMove(List<Point> move);
+
+    /**
+     * Gets possible moves for figure at position, according to playing board size.
+     *
+     * @param position  the position where figure is located
+     * @param boardSize the board size
+     * @return the list of possible moves of current figure.
+     */
+    public abstract List<List<Point>> getPossibleMoves(Point position, int boardSize);
 }

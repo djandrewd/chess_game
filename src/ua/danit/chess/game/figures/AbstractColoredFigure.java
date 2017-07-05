@@ -1,4 +1,4 @@
-package ua.danit.chess.figures;
+package ua.danit.chess.game.figures;
 
 /**
  * Presented figure that has color inside.
@@ -17,7 +17,7 @@ public abstract class AbstractColoredFigure implements Figure {
      *
      * @param color the color, might be 0 or 1 when using standart chess rules.
      */
-    public AbstractColoredFigure(int color) {
+    protected AbstractColoredFigure(int color) {
         this.color = color;
     }
 

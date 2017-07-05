@@ -1,17 +1,21 @@
-package ua.danit.chess;
+package ua.danit.chess.game.rules;
+
+import ua.danit.chess.game.Point;
+import ua.danit.chess.game.figures.Figure;
 
 /**
  * GameRule.
  * <p/>
  * Common rules for all two players game
  *
- * @author Andrey Minov (andrey.minov@playtech.com)
+ * @param <T> the type parameter
+ * @author Andrey Minov
  * @since 2017.06
  */
-public interface GameRule {
+public interface GameRule<T extends Figure> {
 
     /**
-     * Init game for two with colors describing each members.
+     * Init game for two with colors describing each members. Game must be started with colorA!
      *
      * @param colorA the color of figures for first player.
      * @param colorB the color of figures for second player.
@@ -38,6 +42,15 @@ public interface GameRule {
      * @param color        the color of figure to move.
      * @param positionFrom the position where figure is located.
      * @param positionEnd  the position where figure must be moved.
+     * @return true in case move is made successfully.
      */
-    void move(int color, int positionFrom, int positionEnd);
+    boolean move(int color, Point positionFrom, Point positionEnd);
+
+    /**
+     * Gets current playing board.
+     *
+     * @return the playing board for figures playing.
+     */
+    Board<T> getPlayingBoard();
+
 }

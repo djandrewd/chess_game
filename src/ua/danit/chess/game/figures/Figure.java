@@ -1,6 +1,6 @@
-package ua.danit.chess.figures;
+package ua.danit.chess.game.figures;
 
-import ua.danit.chess.Point;
+import ua.danit.chess.game.Point;
 
 import java.util.List;
 
