@@ -1,5 +1,4 @@
-# chess_game
-<h3>Draughts game</h3>
+# Draughts game
 
 Your task is implement draughts game (https://en.wikipedia.org/wiki/Draughts) using provided mock of classes. Implementation should follow all OOP and SOLID principles. Implementation should follow TDD principles.
 
