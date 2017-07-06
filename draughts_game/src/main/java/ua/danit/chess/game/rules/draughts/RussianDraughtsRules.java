@@ -62,8 +62,7 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
       winnerColor = boardState.getWinner();
       boardState.getBoard()
                 .forEach((k, v) -> board.placeFigure(k, (AbstractDraughtFigure) v));
-    }
-    else {
+    } else {
       currentColor = colorA;
       pendingColor = colorB;
       for (int i = 0; i < FIGURES_SIZE / COLOR_SIZE; i++) {
@@ -89,9 +88,6 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
     }
 
     AbstractDraughtFigure figure = board.getFigure(positionFrom);
-    List<Point> move = figure.movePath(positionFrom, positionEnd);
-    Map<Point, AbstractDraughtFigure> beatedFigures = getBeatedFigures(move);
-
     // Make actual move
     board.removeFigure(positionFrom);
     // change figure to king when entity move to current line.
@@ -100,6 +96,8 @@ public class RussianDraughtsRules implements GameRule<AbstractDraughtFigure> {
     }
     board.placeFigure(positionEnd, figure);
 
+    List<Point> move = figure.movePath(positionFrom, positionEnd);
+    Map<Point, AbstractDraughtFigure> beatedFigures = getBeatedFigures(move);
     // remove beated figures from the boards
     beatedFigures.keySet()
                  .forEach(board::removeFigure);

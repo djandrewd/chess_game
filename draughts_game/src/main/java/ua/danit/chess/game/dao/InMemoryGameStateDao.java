@@ -1,10 +1,10 @@
 package ua.danit.chess.game.dao;
 
-import ua.danit.chess.api.dao.GameState;
-import ua.danit.chess.api.dao.GameStateDao;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import ua.danit.chess.api.dao.GameState;
+import ua.danit.chess.api.dao.GameStateDao;
 
 /**
  * In memory instance of game state.
@@ -13,15 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class InMemoryGameStateDao implements GameStateDao {
 
-    private Map<Long, GameState> stateMap = new ConcurrentHashMap<>();
+  private Map<Long, GameState> stateMap = new ConcurrentHashMap<>();
 
-    @Override
-    public void save(GameState gameState) {
-        stateMap.put(gameState.getId(), gameState);
-    }
+  @Override
+  public void save(GameState gameState) {
+    stateMap.put(gameState.getId(), gameState);
+  }
 
-    @Override
-    public GameState get(long id) {
-        return stateMap.get(id);
-    }
+  @Override
+  public GameState get(long id) {
+    return stateMap.get(id);
+  }
 }

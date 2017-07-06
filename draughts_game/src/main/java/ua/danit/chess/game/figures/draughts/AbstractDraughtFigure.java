@@ -56,45 +56,45 @@ public abstract class AbstractDraughtFigure extends AbstractColoredFigure {
    */
   public List<List<Point>> getPossibleMoves(Point position, int boardSize) {
     // Left up
-    List<Point> moveLU = new ArrayList<>();
+    List<Point> movelU = new ArrayList<>();
     // Left right
-    List<Point> moveLD = new ArrayList<>();
+    List<Point> movelD = new ArrayList<>();
     // Right up
-    List<Point> moveRU = new ArrayList<>();
+    List<Point> moverU = new ArrayList<>();
     // Right down
-    List<Point> moveRD = new ArrayList<>();
+    List<Point> moverD = new ArrayList<>();
 
     List<List<Point>> moves = new ArrayList<>();
     for (int i = 1; i <= min(boardSize, getMoveLenght()); i++) {
       Point p = checkAndCreate(position.getXaCoordinate() - i, position.getYaCoordinate() - i);
       if (p != null) {
-        moveLU.add(p);
+        movelU.add(p);
       }
       p = checkAndCreate(position.getXaCoordinate() - i, position.getYaCoordinate() + i);
       if (p != null && position.getYaCoordinate() < boardSize) {
-        moveLD.add(p);
+        movelD.add(p);
       }
       p = checkAndCreate(position.getXaCoordinate() + i, position.getYaCoordinate() - i);
       if (p != null && position.getXaCoordinate() < boardSize) {
-        moveRU.add(p);
+        moverU.add(p);
       }
       p = checkAndCreate(position.getXaCoordinate() + i, position.getYaCoordinate() + i);
       if (p != null && position.getXaCoordinate() < boardSize
           && position.getYaCoordinate() < boardSize) {
-        moveRD.add(p);
+        moverD.add(p);
       }
     }
-    if (!moveLU.isEmpty()) {
-      moves.add(moveLU);
+    if (!movelU.isEmpty()) {
+      moves.add(movelU);
     }
-    if (!moveLD.isEmpty()) {
-      moves.add(moveLD);
+    if (!movelD.isEmpty()) {
+      moves.add(movelD);
     }
-    if (!moveRU.isEmpty()) {
-      moves.add(moveRU);
+    if (!moverU.isEmpty()) {
+      moves.add(moverU);
     }
-    if (!moveRD.isEmpty()) {
-      moves.add(moveRD);
+    if (!moverD.isEmpty()) {
+      moves.add(moverD);
     }
     return moves;
   }
