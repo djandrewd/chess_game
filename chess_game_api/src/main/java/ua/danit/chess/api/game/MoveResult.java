@@ -1,8 +1,8 @@
 package ua.danit.chess.api.game;
 
-import java.util.Map;
-
 import com.google.common.base.MoreObjects;
+
+import java.util.Map;
 
 
 /**
@@ -44,13 +44,14 @@ public class MoveResult {
     this.beatedFigures = beatedFigures;
     this.nextMove = nextMove;
     this.winner = winner;
+    this.moveId = moveId;
   }
 
   /**
    * Gets the error result for this move. Can be 0 in case move is successful..
    *
    * @return the error result for this move. Will be {@link GameErrors}.OK
-   * in case move is successful.
+   *         in case move is successful.
    */
   public GameErrors getError() {
     return error;
